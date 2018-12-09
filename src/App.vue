@@ -1,69 +1,94 @@
 <template>
   <div id="app">
+    <el-button @click="startHacking">Start</el-button>
+    <li-core :config="config" :scope="scope"></li-core>
     <img src="./assets/logo.png">
-    <div>
-      <el-button @click="startHacking">Start</el-button>
-      <el-col v-for="(item, index) in config">
-        <el-col :style="item.style" v-model="modules[0].params[item.vmodel]" v-if="item.type=='col'">
-
-        </el-col>
-        <el-date-picker :style="item.style" v-model="modules[0].params[item.vmodel]" :exp="item.index= index"
-           type="date" v-if="item.type == 'datepicker'" placeholder="选择日期">
-        </el-date-picker>
-        <el-input :exp="item.index= index" :style="item.style" v-if="item.type == 'input'" 
-        v-model="modules[0].params[item.vmodel]"></el-input>
-        <el-button :exp="item.index= index" :style="item.style" v-if="item.type == 'button'" @click="OnClick(item.click)">{{item.text}}</el-button>
-      </el-col>
-    </div>
   </div>
 </template>
 
 <script>
+import LiCore from './components/LiCore';
+
 export default {
+  components:{LiCore},
   data(){
     return {
-      modules:[
-        {
-          params:{}
+      scope:{
+        $data:{
+          tableData:[
+            {username:"曾晓文", address:"上海市", phone: '15546182618'},
+            // {username:"曾晓文", address:"上海市", phone: '15546182618'},
+            // {username:"曾晓文", address:"上海市", phone: '15546182618'}
+          ]
         }
-      ],
+      },
       config:[
         {
-          type:"col",
-          style:"",
+          type:"row",
           nodes:[
             {
               type:"input",
-              style:"width:10%;margin:5px;",
-              vmodel:"firstname"
+              style:"width:200px;padding:10px;float:right;",
+              vmodel:"cir-firstname",
+              span:12
             },
             {
               type:"input",
-              style:"width:10%;margin:5px;",
-              vmodel:"lastname"
+              style:"width:200px;padding:10px;float:left;",
+              vmodel:"cir-lastname",
+              span:12
             }
           ],
         },
         {
-          type:"input",
-          style:"width:10%;margin:5px;",
-          vmodel:"firstname"
+          type:"row",
+          nodes:[
+            {
+              type:"input",
+              style:"width:200px;padding:10px;float:right;",
+              vmodel:"firstname",
+              span:12
+            },
+            {
+              type:"datepicker",
+              style:"width:200px;padding:10px;float:left;",
+              vmodel:"birthday",
+              span:12
+            }
+          ]
         },
         {
-          type:"input",
-          style:"width:10%;margin:5px;",
-          vmodel:"lastname"
+          type:"row",
+          nodes:[
+            {
+              type:"button",
+              text:"我是一个按钮",
+              style:"",
+              click:"$context.tableData.push({username:'曾晓文', address:'上海市', phone: '15546182618'}); console.log('scope=' + JSON.stringify(scope));"
+            }
+          ]
         },
         {
-          type:"datepicker",
-          style:"margin:10px",
-          vmodel:"birthday"
-        },
-        {
-          type:"button",
-          text:"我是一个按钮",
-          style:"left:20px",
-          click:"console.log('params=' + JSON.stringify(params))"
+          type:"table",
+          vmodel:"tableData",
+          style:"padding:10px;margin-left:20%;margin-right:20%;",
+          selection:true,
+          metadata:[
+            {
+              label:"姓名",
+              value:"username",
+              width:"200px"
+            },
+            {
+              label:"地址",
+              value:"address",
+              width:"400px"
+            },{
+              label:"联系电话",
+              value:"phone",
+              width:"200px"
+            }
+          ]
         }
       ]
     }
@@ -76,12 +101,6 @@ export default {
         message: 'We\'ve laid the ground work for you. It\'s time for you to build something epic!',
         duration: 5000
       })
-    },
-    OnClick(item){
-      let params = this.params;
-      console.log(item);
-      eval(item);
-
     }
   }
 }
